@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OptiConvert — Live Demo | Professional Image Converter</title>
+<meta name="description" content="Try OptiConvert free — convert JPG, PNG and WebP images in your browser. Full version includes batch ZIP, AVIF, TIFF, watermarking, resize presets, and API access." />
+<link rel="canonical" href="https://www.codester.com/blackbound" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{
+  font-family:'Inter',sans-serif;
+  background:#0a0a0f;
+  color:#e8eaf6;
+  min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%,rgba(12,135,234,.12),transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%,rgba(139,92,246,.08),transparent);
+}
+a{color:#36a4f8;text-decoration:none}
+
+/* ── Typography ─────────────────────────────────────────── */
+.font-display{font-family:'Outfit',sans-serif}
+.text-gradient{
+  background:linear-gradient(135deg,#36a4f8 0%,#a78bfa 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ── Layout ─────────────────────────────────────────────── */
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+/* ── Demo Banner ────────────────────────────────────────── */
+.demo-banner{
+  background:linear-gradient(135deg,#0c87ea,#7c3aed);
+  padding:10px 20px;text-align:center;position:sticky;top:0;z-index:100;
+}
+.demo-banner p{font-size:13px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.demo-banner a{
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);
+  color:#fff;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;
+  transition:background .2s;white-space:nowrap;
+}
+.demo-banner a:hover{background:rgba(255,255,255,.35)}
+
+/* ── Header ─────────────────────────────────────────────── */
+header{
+  border-bottom:1px solid #252540;
+  background:rgba(10,10,15,.85);
+  backdrop-filter:blur(12px);
+  padding:0 20px;
+}
+.header-inner{
+  max-width:1200px;margin:0 auto;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,#0c87ea,#8b5cf6);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  border:1px solid rgba(255,255,255,.1);
+}
+.brand-name{font-family:'Outfit',sans-serif;font-weight:700;font-size:18px}
+.brand-sub{font-size:10px;color:#565880;letter-spacing:.1em;text-transform:uppercase;margin-top:-2px}
+.header-badges{display:flex;gap:8px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:9999px;font-size:11px;font-weight:600}
+.badge-blue{background:rgba(12,135,234,.15);color:#36a4f8;border:1px solid rgba(12,135,234,.25)}
+.badge-green{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.25)}
+.badge-yellow{background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}
+@media(max-width:600px){.header-badges{display:none}}
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero{text-align:center;padding:52px 20px 36px}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 16px;border-radius:9999px;font-size:12px;font-weight:600;
+  background:rgba(245,158,11,.12);color:#fbbf24;
+  border:1px solid rgba(245,158,11,.25);margin-bottom:20px;
+}
+.hero h1{font-family:'Outfit',sans-serif;font-size:clamp(32px,6vw,52px);font-weight:800;line-height:1.1;margin-bottom:14px}
+.hero p{color:#9094c0;font-size:16px;max-width:560px;margin:0 auto 28px}
+.feature-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:12px}
+.pill{
+  padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:500;
+  background:#13131e;border:1px solid #252540;color:#9094c0;
+}
+.pill.locked{opacity:.55;position:relative}
+.pill.locked::after{content:'🔒';margin-left:4px;font-size:10px}
+
+/* ── Main Grid ──────────────────────────────────────────── */
+.main-grid{
+  max-width:1200px;margin:0 auto;padding:0 20px 60px;
+  display:grid;grid-template-columns:1fr 340px;gap:20px;
+}
+@media(max-width:900px){.main-grid{grid-template-columns:1fr}}
+
+/* ── Cards ──────────────────────────────────────────────── */
+.card{
+  background:#13131e;border:1px solid #252540;border-radius:18px;
+  padding:22px;
+  box-shadow:0 4px 24px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.05);
+}
+.card-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:600;color:#e8eaf6;margin-bottom:18px;
+}
+.card-title span{font-size:16px}
+
+/* ── Dropzone ───────────────────────────────────────────── */
+#dropzone{
+  border:2px dashed #252540;border-radius:14px;
+  padding:40px 20px;text-align:center;cursor:pointer;
+  transition:all .25s;min-height:200px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;background:rgba(255,255,255,.01);
+}
+#dropzone:hover,#dropzone.drag-over{
+  border-color:#0c87ea;background:rgba(12,135,234,.05);
+}
+#dropzone.drag-over{animation:borderPulse 1.5s ease-in-out infinite}
+@keyframes borderPulse{0%,100%{border-color:rgba(12,135,234,.5)}50%{border-color:rgba(139,92,246,.5)}}
+.upload-icon{
+  width:60px;height:60px;border-radius:16px;background:#1e1e35;
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  margin-bottom:14px;transition:transform .3s,background .3s;
+}
+#dropzone:hover .upload-icon{transform:translateY(-4px);background:rgba(12,135,234,.2)}
+#dropzone h3{font-size:16px;font-weight:600;margin-bottom:6px}
+#dropzone p{font-size:13px;color:#565880;margin-bottom:18px}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 22px;border-radius:10px;font-size:13px;font-weight:600;
+  color:#fff;cursor:pointer;border:none;outline:none;
+  background:linear-gradient(135deg,#0c87ea,#8b5cf6);
+  box-shadow:0 4px 16px rgba(12,135,234,.35);
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.btn-primary:hover{box-shadow:0 6px 24px rgba(12,135,234,.5);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+#file-input{display:none}
+
+/* ── File list ──────────────────────────────────────────── */
+#file-list{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.file-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:12px;
+  background:#0f0f1a;border:1px solid #252540;
+  animation:slideIn .25s ease-out;
+}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.file-thumb{width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#1e1e35}
+.file-info{flex:1;min-width:0}
+.file-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-size{font-size:11px;color:#565880;margin-top:2px}
+.file-status{font-size:11px;font-weight:600;flex-shrink:0}
+.file-status.pending{color:#565880}
+.file-status.converting{color:#36a4f8}
+.file-status.done{color:#34d399}
+.file-status.error{color:#f87171}
+.file-remove{
+  background:none;border:none;color:#565880;cursor:pointer;
+  font-size:16px;padding:2px 6px;border-radius:6px;transition:color .15s;flex-shrink:0;
+}
+.file-remove:hover{color:#f87171}
+
+/* ── Demo limit notice ──────────────────────────────────── */
+.demo-limit{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:10px;margin-top:12px;
+  background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);
+  font-size:12px;color:#fbbf24;
+}
+
+/* ── Options Panel ──────────────────────────────────────── */
+.field-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#565880;display:block;margin-bottom:8px}
+.select-field,.input-field{
+  width:100%;background:#0a0a0f;border:1px solid #252540;border-radius:10px;
+  padding:9px 12px;color:#e8eaf6;font-size:13px;font-family:inherit;
+  transition:border-color .2s;outline:none;appearance:none;
+}
+.select-field:focus,.input-field:focus{border-color:#0c87ea;box-shadow:0 0 0 2px rgba(12,135,234,.15)}
+.select-wrapper{position:relative}
+.select-wrapper::after{
+  content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  color:#565880;pointer-events:none;font-size:12px;
+}
+
+/* ── Quality slider ─────────────────────────────────────── */
+.slider-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.quality-val{font-size:14px;font-weight:700;color:#36a4f8}
+input[type=range]{
+  width:100%;height:6px;appearance:none;background:#1e1e35;
+  border-radius:9999px;outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  appearance:none;width:18px;height:18px;border-radius:50%;
+  background:linear-gradient(135deg,#0c87ea,#8b5cf6);
+  box-shadow:0 0 8px rgba(12,135,234,.5);cursor:pointer;
+}
+.quality-labels{display:flex;justify-content:space-between;font-size:10px;color:#565880;margin-top:4px}
+
+/* ── Section divider ────────────────────────────────────── */
+.divider{border:none;border-top:1px solid #1e1e35;margin:18px 0}
+
+/* ── Pro locked feature ─────────────────────────────────── */
+.pro-feature{
+  position:relative;border-radius:12px;overflow:hidden;
+  border:1px solid rgba(245,158,11,.15);
+}
+.pro-feature-inner{padding:14px;background:rgba(245,158,11,.04)}
+.pro-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  background:rgba(245,158,11,.15);color:#fbbf24;
+  border:1px solid rgba(245,158,11,.25);padding:2px 8px;border-radius:9999px;margin-bottom:8px;
+}
+.pro-title{font-size:13px;font-weight:600;color:#9094c0;margin-bottom:4px}
+.pro-desc{font-size:11px;color:#3a3a6a}
+.pro-overlay{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;
+  background:rgba(10,10,15,.7);backdrop-filter:blur(2px);
+  cursor:not-allowed;
+}
+.pro-overlay-text{font-size:11px;font-weight:600;color:#fbbf24}
+
+/* ── Convert button ─────────────────────────────────────── */
+#convert-btn{width:100%;padding:14px;border-radius:12px;font-size:15px;margin-top:4px;justify-content:center}
+#convert-btn .btn-icon{font-size:16px}
+
+/* ── Progress ───────────────────────────────────────────── */
+.progress-wrap{margin-top:12px;display:none}
+.progress-wrap.show{display:block}
+.progress-track{height:6px;background:#1e1e35;border-radius:9999px;overflow:hidden}
+.progress-fill{
+  height:100%;border-radius:9999px;width:0%;transition:width .4s ease;
+  background:linear-gradient(90deg,#0c87ea,#8b5cf6);
+}
+.progress-label{font-size:12px;color:#565880;text-align:center;margin-top:8px}
+
+/* ── Results ────────────────────────────────────────────── */
+#results-section{display:none;margin-top:16px}
+#results-section.show{display:block}
+.result-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;border-radius:10px;margin-bottom:8px;
+  background:#0f0f1a;border:1px solid rgba(16,185,129,.2);
+  animation:slideIn .3s ease-out;
+}
+.result-info{flex:1;min-width:0}
+.result-name{font-size:12px;color:#9094c0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result-stats{font-size:11px;color:#34d399;margin-top:2px}
+.download-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;
+  background:rgba(16,185,129,.15);color:#34d399;
+  border:1px solid rgba(16,185,129,.25);cursor:pointer;
+  transition:all .15s;white-space:nowrap;text-decoration:none;
+}
+.download-btn:hover{background:rgba(16,185,129,.25);color:#34d399}
+
+/* ── Pro CTA card ───────────────────────────────────────── */
+.cta-card{
+  margin-top:20px;padding:24px;border-radius:16px;text-align:center;
+  background:linear-gradient(135deg,rgba(12,135,234,.08),rgba(139,92,246,.08));
+  border:1px solid rgba(139,92,246,.2);
+}
+.cta-card h3{font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px}
+.cta-card p{font-size:12px;color:#9094c0;margin-bottom:16px;line-height:1.7}
+.cta-features{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;text-align:left}
+.cta-feature{display:flex;align-items:center;gap:8px;font-size:12px;color:#9094c0}
+.cta-feature .tick{color:#34d399;font-size:13px;flex-shrink:0}
+.btn-cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:13px;border-radius:12px;font-size:14px;font-weight:700;
+  color:#fff;cursor:pointer;border:none;text-decoration:none;
+  background:linear-gradient(135deg,#0c87ea,#8b5cf6);
+  box-shadow:0 4px 20px rgba(12,135,234,.4);transition:all .2s;
+}
+.btn-cta:hover{box-shadow:0 6px 28px rgba(12,135,234,.6);transform:translateY(-1px);color:#fff}
+
+/* ── Footer ─────────────────────────────────────────────── */
+footer{
+  border-top:1px solid #1e1e35;padding:24px 20px;text-align:center;
+  font-size:12px;color:#3a3a6a;
+}
+footer span{color:#8b5cf6;font-weight:600}
+
+/* ── Toast ──────────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  background:#13131e;border:1px solid #252540;color:#e8eaf6;
+  padding:12px 18px;border-radius:12px;font-size:13px;font-weight:500;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  display:flex;align-items:center;gap:10px;
+  transform:translateY(80px);opacity:0;transition:all .3s ease;max-width:320px;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-color:rgba(16,185,129,.3)}
+.toast.error{border-color:rgba(248,113,113,.3)}
+
+/* ── API badge ──────────────────────────────────────────── */
+.api-section{
+  margin-top:12px;padding:14px;border-radius:12px;
+  background:rgba(12,135,234,.05);border:1px solid rgba(12,135,234,.15);
+}
+.api-section code{
+  display:block;font-family:'Courier New',monospace;font-size:11px;
+  color:#7cc3fc;background:rgba(0,0,0,.3);padding:8px 10px;
+  border-radius:6px;margin-top:6px;word-break:break-all;
+  border:1px solid rgba(12,135,234,.1);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ Demo Banner ═══════════════════════════════════════ -->
+<div class="demo-banner">
+  <p>
+    ⚡ <strong>LIVE DEMO</strong> — Limited to 3 files &amp; JPG/PNG/WebP output.
+    Full version: Batch ZIP · AVIF · TIFF · Watermark · Resize · API
+  </p>
+</div>
+
+<!-- ═══ Header ════════════════════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo" style="background:none;padding:2px;border:1px solid rgba(255,255,255,.15)">
+        <img src="data:image/png;base64,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" alt="OptiConvert Logo" style="width:34px;height:34px;border-radius:8px;object-fit:contain;display:block;" />
+      </div>
+      <div>
+        <div class="brand-name text-gradient">OptiConvert</div>
+        <div class="brand-sub">Image Processor · Demo</div>
+      </div>
+    </div>
+    <div class="header-badges">
+      <span class="badge badge-green">🟢 Client-Side Demo</span>
+      <span class="badge badge-yellow">⚡ No Upload Required</span>
+      <span class="badge badge-blue">🔒 Privacy First</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ Hero ══════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-pill">⭐ Try Before You Buy — Interactive Demo</div>
+  <h1 class="font-display">
+    Convert. <span class="text-gradient">Optimize.</span> Deliver.
+  </h1>
+  <p>Upload images and convert them instantly — right in your browser. Powered by OptiConvert's engine. No data leaves your device in demo mode.</p>
+
+  <div class="feature-pills">
+    <span class="pill">⚡ JPG · PNG · WebP — FREE</span>
+    <span class="pill">✅ Quality control</span>
+    <span class="pill">✅ Individual download</span>
+    <span class="pill locked">AVIF · TIFF · BMP</span>
+    <span class="pill locked">Batch ZIP download</span>
+    <span class="pill locked">Image watermark</span>
+    <span class="pill locked">Resize &amp; presets</span>
+    <span class="pill locked">EXIF strip</span>
+    <span class="pill locked">REST API access</span>
+  </div>
+</div>
+
+<!-- ═══ Main Grid ══════════════════════════════════════════ -->
+<div class="main-grid">
+
+  <!-- LEFT: Upload + Results -->
+  <div>
+
+    <!-- Upload zone -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title"><span>📁</span> Upload Images</div>
+
+      <div id="dropzone">
+        <div class="upload-icon">☁️</div>
+        <h3>Drag &amp; drop images here</h3>
+        <p>JPG, PNG, WebP · Max 50MB each · Demo limit: 3 files</p>
+        <button class="btn-primary" onclick="document.getElementById('file-input').click()">
+          📂 Browse Files
+        </button>
+        <input type="file" id="file-input" multiple accept="image/jpeg,image/png,image/webp,image/gif,image/bmp" />
+      </div>
+
+      <div id="file-list"></div>
+
+      <div class="demo-limit" id="demo-limit-msg" style="display:none">
+        ⚠️ <strong>Demo limit:</strong> Max 3 files. Full version supports 20 files + batch ZIP.
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="results-section">
+      <div class="card">
+        <div class="card-title"><span>✅</span> Conversion Results</div>
+        <div id="results-list"></div>
+
+        <div style="margin-top:16px;padding:14px;border-radius:12px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);text-align:center">
+          <p style="font-size:12px;color:#fbbf24;font-weight:600;margin-bottom:6px">🔒 Full Version: Download all as one ZIP + 17 more features</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Settings + CTA -->
+  <div>
+
+    <!-- Conversion settings -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title"><span>⚙️</span> Conversion Settings</div>
+
+      <!-- Format -->
+      <label class="field-label">Output Format</label>
+      <div class="select-wrapper" style="margin-bottom:16px">
+        <select class="select-field" id="format-select">
+          <option value="jpeg">JPG / JPEG</option>
+          <option value="png">PNG</option>
+          <option value="webp" selected>WebP</option>
+          <option value="avif" disabled>AVIF 🔒 Pro</option>
+          <option value="tiff" disabled>TIFF 🔒 Pro</option>
+        </select>
+      </div>
+
+      <!-- Quality -->
+      <div id="quality-section">
+        <div class="slider-row">
+          <label class="field-label" style="margin:0">Quality</label>
+          <span class="quality-val" id="quality-display">82</span>
+        </div>
+        <input type="range" id="quality-slider" min="1" max="100" value="82" />
+        <div class="quality-labels"><span>Smaller</span><span>Balanced</span><span>Best</span></div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Pro: Resize -->
+      <div class="pro-feature" style="margin-bottom:12px">
+        <div class="pro-feature-inner">
+          <div class="pro-badge">🔒 Pro Feature</div>
+          <div class="pro-title">Resize &amp; Social Presets</div>
+          <div class="pro-desc">Instagram, YouTube, Facebook and 5 more presets. Custom px or percentage scaling.</div>
+        </div>
+        <div class="pro-overlay">
+          <div style="font-size:24px">📐</div>
+          <div class="pro-overlay-text">Available in Full Version</div>
+        </div>
+      </div>
+
+      <!-- Pro: Watermark -->
+      <div class="pro-feature" style="margin-bottom:12px">
+        <div class="pro-feature-inner">
+          <div class="pro-badge">🔒 Pro Feature</div>
+          <div class="pro-title">Watermark Overlay</div>
+          <div class="pro-desc">Text or image watermark applied to all files. Position + opacity control.</div>
+        </div>
+        <div class="pro-overlay">
+          <div style="font-size:24px">🖋️</div>
+          <div class="pro-overlay-text">Available in Full Version</div>
+        </div>
+      </div>
+
+      <!-- Pro: EXIF -->
+      <div class="pro-feature">
+        <div class="pro-feature-inner">
+          <div class="pro-badge">🔒 Pro Feature</div>
+          <div class="pro-title">EXIF / Metadata Strip</div>
+          <div class="pro-desc">Remove GPS location, camera data, and IPTC for privacy.</div>
+        </div>
+        <div class="pro-overlay">
+          <div style="font-size:24px">🔏</div>
+          <div class="pro-overlay-text">Available in Full Version</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Convert button + progress -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title"><span>🚀</span> Process Queue</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
+        <div style="text-align:center;background:#0a0a0f;border:1px solid #252540;border-radius:10px;padding:12px">
+          <div style="font-size:20px;font-weight:800;font-family:'Outfit'sans-serif" id="stat-total">0</div>
+          <div style="font-size:10px;color:#565880;text-transform:uppercase;letter-spacing:.07em;margin-top:2px">Files</div>
+        </div>
+        <div style="text-align:center;background:#0a0a0f;border:1px solid #252540;border-radius:10px;padding:12px">
+          <div style="font-size:20px;font-weight:800;font-family:'Outfit',sans-serif;color:#36a4f8" id="stat-pending">0</div>
+          <div style="font-size:10px;color:#565880;text-transform:uppercase;letter-spacing:.07em;margin-top:2px">Pending</div>
+        </div>
+        <div style="text-align:center;background:#0a0a0f;border:1px solid #252540;border-radius:10px;padding:12px">
+          <div style="font-size:20px;font-weight:800;font-family:'Outfit',sans-serif;color:#34d399" id="stat-done">0</div>
+          <div style="font-size:10px;color:#565880;text-transform:uppercase;letter-spacing:.07em;margin-top:2px">Done</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="convert-btn" disabled>
+        <span class="btn-icon">⚡</span>
+        <span id="convert-label">Convert Images</span>
+      </button>
+
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-label" id="progress-label">Processing…</div>
+      </div>
+    </div>
+
+    <!-- API info -->
+    <div class="card api-section" style="margin-bottom:20px">
+      <div class="card-title"><span>🔌</span> REST API Included</div>
+      <p style="font-size:12px;color:#9094c0;margin-bottom:8px">Full version ships a complete backend API — integrate into any app:</p>
+      <code>POST /api/convert → returns ZIP</code>
+      <code>POST /api/preview → base64 output</code>
+      <code>GET  /health → server status</code>
+    </div>
+
+
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>© 2025 <span>OptiConvert</span> · Demo Version · Full source code available on purchase</p>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════
+// OptiConvert Demo — Client-Side Image Conversion
+// Uses browser Canvas API (no server needed)
+// Supports: JPEG, PNG, WebP output
+// ════════════════════════════════════════════════════
+
+const MAX_FILES = 3;
+let queue = []; // { id, file, name, size, objectUrl, status, outputBlob, outputSize }
+let converting = false;
+
+// ── Helpers ──────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const fmt = bytes => {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1048576).toFixed(2) + ' MB';
+};
+const mime = f => ({ jpeg:'image/jpeg', png:'image/png', webp:'image/webp' })[f] || 'image/jpeg';
+const ext  = f => ({ jpeg:'jpg', png:'png', webp:'webp' })[f] || 'jpg';
+
+// ── Toast ─────────────────────────────────────────────
+function showToast(msg, type='success') {
+  const t = $('toast');
+  t.textContent = (type==='success'?'✅ ':'❌ ') + msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── Quality slider ────────────────────────────────────
+const slider = $('quality-slider');
+const qDisplay = $('quality-display');
+slider.addEventListener('input', () => qDisplay.textContent = slider.value);
+
+// Format change — hide quality for PNG
+$('format-select').addEventListener('change', e => {
+  $('quality-section').style.display = e.target.value === 'png' ? 'none' : 'block';
+});
+
+// ── Drag & Drop ───────────────────────────────────────
+const dz = $('dropzone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  handleFiles([...e.dataTransfer.files]);
+});
+$('file-input').addEventListener('change', e => handleFiles([...e.target.files]));
+
+function handleFiles(files) {
+  const remaining = MAX_FILES - queue.length;
+  if (remaining <= 0) {
+    showToast('Demo limit: 3 files max. Buy full version for 20!', 'error');
+    return;
+  }
+  const accepted = files.filter(f => f.type.startsWith('image/')).slice(0, remaining);
+  if (accepted.length < files.length) {
+    showToast(`Only ${accepted.length} of ${files.length} files added (demo limit or unsupported type)`, 'error');
+  }
+  accepted.forEach(addFile);
+  $('file-input').value = '';
+}
+
+function addFile(file) {
+  const id = Date.now() + Math.random().toString(36).slice(2,7);
+  const item = { id, file, name: file.name, size: file.size, objectUrl: URL.createObjectURL(file), status: 'pending', outputBlob: null, outputSize: 0 };
+  queue.push(item);
+  renderQueue();
+  updateStats();
+}
+
+function removeFile(id) {
+  const item = queue.find(q => q.id === id);
+  if (item) URL.revokeObjectURL(item.objectUrl);
+  queue = queue.filter(q => q.id !== id);
+  renderQueue();
+  updateStats();
+  if (queue.length === 0) {
+    $('results-section').classList.remove('show');
+    $('convert-btn').disabled = true;
+  }
+}
+
+// ── Render queue list ─────────────────────────────────
+function renderQueue() {
+  const list = $('file-list');
+  list.innerHTML = '';
+  queue.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'file-item';
+    div.innerHTML = `
+      <img class="file-thumb" src="${item.objectUrl}" alt="${item.name}" />
+      <div class="file-info">
+        <div class="file-name">${item.name}</div>
+        <div class="file-size">${fmt(item.size)}</div>
+      </div>
+      <span class="file-status ${item.status}">${
+        {pending:'⏳ Pending', converting:'⚡ Converting…', done:'✅ Done', error:'❌ Error'}[item.status]
+      }</span>
+      ${item.status !== 'converting' ? `<button class="file-remove" onclick="removeFile('${item.id}')">✕</button>` : ''}
+    `;
+    list.appendChild(div);
+  });
+  $('demo-limit-msg').style.display = queue.length >= MAX_FILES ? 'flex' : 'none';
+  $('convert-btn').disabled = queue.length === 0 || converting;
+}
+
+function updateStats() {
+  $('stat-total').textContent   = queue.length;
+  $('stat-pending').textContent = queue.filter(q => q.status === 'pending').length;
+  $('stat-done').textContent    = queue.filter(q => q.status === 'done').length;
+}
+
+// ── Core: Convert image via Canvas API ───────────────
+function convertImage(file, format, quality) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width  = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      // White background for JPEG (canvas is transparent by default)
+      if (format === 'jpeg') {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      const mimeType = mime(format);
+      const q = format === 'png' ? undefined : quality / 100;
+      canvas.toBlob(blob => {
+        if (blob) resolve(blob);
+        else reject(new Error('Canvas toBlob failed'));
+      }, mimeType, q);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image failed to load')); };
+    img.src = url;
+  });
+}
+
+// ── Convert button ────────────────────────────────────
+$('convert-btn').addEventListener('click', async () => {
+  if (converting || queue.length === 0) return;
+  converting = true;
+  const format  = $('format-select').value;
+  const quality = parseInt(slider.value);
+
+  $('convert-btn').disabled = true;
+  $('convert-label').textContent = `Converting ${queue.length} image${queue.length>1?'s':''}…`;
+
+  const pw = $('progress-wrap');
+  const pf = $('progress-fill');
+  const pl = $('progress-label');
+  pw.classList.add('show');
+  pf.style.width = '5%';
+
+  const pending = queue.filter(q => q.status === 'pending');
+  let done = 0;
+
+  for (const item of pending) {
+    item.status = 'converting';
+    renderQueue();
+    try {
+      // Artificial small delay for UX feel
+      await new Promise(r => setTimeout(r, 180));
+      const blob = await convertImage(item.file, format, quality);
+      item.outputBlob = blob;
+      item.outputSize = blob.size;
+      item.status = 'done';
+    } catch(e) {
+      item.status = 'error';
+    }
+    done++;
+    pf.style.width = Math.round((done / pending.length) * 100) + '%';
+    pl.textContent = `${done} of ${pending.length} converted`;
+    renderQueue();
+    updateStats();
+  }
+
+  // Done
+  await new Promise(r => setTimeout(r, 400));
+  pw.classList.remove('show');
+  pf.style.width = '0%';
+  converting = false;
+  $('convert-label').textContent = 'Convert Images';
+  $('convert-btn').disabled = false;
+
+  renderResults(format);
+  showToast(`${done} image${done>1?'s':''} converted successfully!`);
+});
+
+// ── Render result list ────────────────────────────────
+function renderResults(format) {
+  const section = $('results-section');
+  const list    = $('results-list');
+  list.innerHTML = '';
+
+  const doneItems = queue.filter(q => q.status === 'done');
+  if (doneItems.length === 0) return;
+
+  doneItems.forEach(item => {
+    const outName = item.name.replace(/\.[^.]+$/, '') + '_opticonvert.' + ext(format);
+    const savings = item.outputSize < item.size
+      ? Math.round((1 - item.outputSize/item.size) * 100)
+      : null;
+    const dlUrl = URL.createObjectURL(item.outputBlob);
+
+    const div = document.createElement('div');
+    div.className = 'result-item';
+    div.innerHTML = `
+      <div class="result-info">
+        <div class="result-name">📄 ${outName}</div>
+        <div class="result-stats">
+          ${fmt(item.size)} → ${fmt(item.outputSize)}
+          ${savings !== null ? `<span style="color:#34d399"> · −${savings}%</span>` : ''}
+        </div>
+      </div>
+      <a href="${dlUrl}" download="${outName}" class="download-btn">⬇ Download</a>
+    `;
+    list.appendChild(div);
+  });
+
+  section.classList.add('show');
+  section.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// ── Init ──────────────────────────────────────────────
+updateStats();
+</script>
+</body>
+</html>
